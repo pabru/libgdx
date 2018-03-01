@@ -25,7 +25,6 @@ import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogL
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.gargoylesoftware.htmlunit.javascript.host.Navigator;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.CanvasElement;
@@ -84,6 +83,24 @@ public class GwtInput implements Input {
 
 	@Override
 	public float getAccelerometerZ () {
+		return 0;
+	}
+	
+	@Override
+	public float getGyroscopeX () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeY () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeZ () {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -149,7 +166,7 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isButtonPressed (int button) {
-		return button == Buttons.LEFT && touched[0];
+		return pressedButtons.contains(button) && touched[0];
 	}
 
 	@Override
@@ -245,6 +262,11 @@ public class GwtInput implements Input {
 
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
+	}
+
+	@Override
+	public boolean isCatchMenuKey () {
+		return false;
 	}
 
 	@Override
@@ -401,7 +423,7 @@ public class GwtInput implements Input {
 				// on mac
 				delta = -1.0 * evt.wheelDelta / 40;
 			}
-		} else if (agentInfo.isChrome || agentInfo.isSafari) {
+		} else if (agentInfo.isChrome || agentInfo.isSafari || agentInfo.isIE) {
 			delta = -1.0 * evt.wheelDelta / 120;
 			// handle touchpad for chrome
 			if (Math.abs(delta) < 1) {
@@ -476,7 +498,7 @@ public class GwtInput implements Input {
 
 	private void handleEvent (NativeEvent e) {
 		if (e.getType().equals("mousedown")) {
-			if (!e.getEventTarget().equals(canvas) || touched[0]) {
+			if (!e.getEventTarget().equals(canvas) || pressedButtons.contains(getButton(e.getButton()))) {
 				float mouseX = getRelativeX(e, canvas);
 				float mouseY = getRelativeY(e, canvas);
 				if (mouseX < 0 || mouseX > Gdx.graphics.getWidth() || mouseY < 0 || mouseY > Gdx.graphics.getHeight()) {
@@ -523,7 +545,7 @@ public class GwtInput implements Input {
 		}
 
 		if (e.getType().equals("mouseup")) {
-			if (!touched[0]) return;
+			if (!pressedButtons.contains(getButton(e.getButton()))) return;
 			this.pressedButtons.remove(getButton(e.getButton()));
 			this.touched[0] = pressedButtons.size > 0;
 			if (isCursorCatched()) {
@@ -963,4 +985,5 @@ public class GwtInput implements Input {
 	private static final int KEY_BACKSLASH = 220;
 	private static final int KEY_CLOSE_BRACKET = 221;
 	private static final int KEY_SINGLE_QUOTE = 222;
+
 }

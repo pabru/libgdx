@@ -558,18 +558,27 @@ public interface Input {
 	/** Enumeration of potentially available peripherals. Use with {@link Input#isPeripheralAvailable(Peripheral)}.
 	 * @author mzechner */
 	public enum Peripheral {
-		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator
+		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope, RotationVector
 	}
 
-	/** @return The value of the accelerometer on its x-axis. ranges between [-10,10]. */
+	/** @return The acceleration force in m/s^2 applied to the device in the X axis, including the force of gravity */
 	public float getAccelerometerX ();
 
-	/** @return The value of the accelerometer on its y-axis. ranges between [-10,10]. */
+	/** @return The acceleration force in m/s^2 applied to the device in the Y axis, including the force of gravity */
 	public float getAccelerometerY ();
 
-	/** @return The value of the accelerometer on its y-axis. ranges between [-10,10]. */
+	/** @return The acceleration force in m/s^2 applied to the device in the Z axis, including the force of gravity */
 	public float getAccelerometerZ ();
 
+	/** @return The rate of rotation in rad/s around the X axis */
+	public float getGyroscopeX ();
+
+	/** @return The rate of rotation in rad/s around the Y axis */
+	public float getGyroscopeY ();
+
+	/** @return The rate of rotation in rad/s around the Z axis */
+	public float getGyroscopeZ ();
+	
 	/** @return The x coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
 	 *         pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getX ();
@@ -717,6 +726,9 @@ public interface Input {
 	 * 
 	 * @param catchMenu whether to catch the menu button */
 	public void setCatchMenuKey (boolean catchMenu);
+	
+	/** @return whether the menu button is currently being caught */
+	public boolean isCatchMenuKey ();
 
 	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
 	 * {@link ApplicationListener#render()} method each frame.
